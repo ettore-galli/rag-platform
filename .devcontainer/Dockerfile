@@ -22,8 +22,12 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     wget \
     git \
+    make \
     sudo  
 
+RUN apt-get install -y --no-install-recommends \
+        libatomic1
+        
 # Create non-root user
 ARG USERNAME=vscode
 ARG USER_UID=1000
@@ -36,5 +40,6 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 
 FROM base AS python-image
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 FROM python-image AS rag-image
