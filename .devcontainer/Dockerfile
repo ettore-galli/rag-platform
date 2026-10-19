@@ -23,7 +23,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     git \
     make \
-    sudo  
+    sudo \
+    zstd 
 
 RUN apt-get install -y --no-install-recommends \
         libatomic1
@@ -43,3 +44,6 @@ FROM base AS python-image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 FROM python-image AS rag-image
+
+# Ollama
+RUN curl -fsSL https://ollama.com/install.sh | sh
