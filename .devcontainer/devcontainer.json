@@ -16,7 +16,9 @@
         "--env-file",
         ".devcontainer/.env"
     ],
+    "mounts": [
+        "source=/Volumes/DOCKER/ollama-models,target=/mnt/models,type=bind"
+    ],
     "postCreateCommand": "./env-display.sh",
     "remoteUser": "vscode"
- 
 }

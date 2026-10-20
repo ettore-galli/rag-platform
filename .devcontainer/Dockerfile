@@ -41,7 +41,7 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 
 FROM base AS python-image
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /usr/local/bin/uv
 
 FROM python-image AS rag-image
 
