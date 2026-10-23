@@ -1,28 +1,22 @@
 
-add-uv-path:
-	@echo 'export PATH=$$(pwd)/tools/uv:$$PATH'
-
-dev:
-	. ./devenv.sh 
-
 setup-lint:
-	uv tool install --active ruff
-	uv tool install --active pyright
-	uv tool install --active black
+	uv tool install ruff
+	uv tool install pyright
+	uv tool install black
 
 test:
 	pytest -s -vvv tests/unit/
 
 lint:
-	uv run --active black .
-	uv run --active ruff check .
-	uv run --active pyright .
+	uv run black .
+	uv run ruff check .
+	uv run pyright .
 
 ruff-fix:
-	uv run --active ruff check . --fix
+	uv run ruff check . --fix
 
 sync:
-	uv sync --active
+	uv sync  
 
 install-python:
 	uv python install 3.12

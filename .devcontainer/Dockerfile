@@ -39,11 +39,11 @@ RUN groupadd --gid $USER_GID $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
     chmod 0440 /etc/sudoers.d/$USERNAME
 
-FROM base AS python-image
+FROM base AS python-dev-image
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /usr/local/bin/uv
 
-FROM python-image AS rag-image
+# FROM python-image AS rag-image
 
-# Ollama
-RUN curl -fsSL https://ollama.com/install.sh | sh
+# # Ollama
+# RUN curl -fsSL https://ollama.com/install.sh | sh

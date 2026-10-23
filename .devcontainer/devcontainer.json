@@ -1,10 +1,19 @@
 {
     "name": "rag-platform-env",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": "..",
-        "target": "rag-image"
-    },
+    // "build": {
+    //     "dockerfile": "Dockerfile",
+    //     "context": "..",
+    //     "target": "rag-image"
+    // },
+    "workspaceFolder": "/workspace",
+    "dockerComposeFile": [
+        "docker-compose.yml"
+    ],
+    "service": "dev",
+    "runServices": [
+        "ollama"
+    ],
+    "shutdownAction": "stopCompose",
     "customizations": {
         "vscode": {
             "settings": {
@@ -12,10 +21,10 @@
             }
         }
     },
-    "runArgs": [
-        "--env-file",
-        ".devcontainer/.env"
-    ],
+    // "runArgs": [
+    //     "--env-file",
+    //     ".devcontainer/.env"
+    // ],
     "mounts": [
         "source=/Volumes/DOCKER/ollama-models,target=/mnt/models,type=bind"
     ],
