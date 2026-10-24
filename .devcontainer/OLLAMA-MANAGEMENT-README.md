@@ -223,6 +223,8 @@ ollama run mistral
 
 # Esempi utili:
 ollama pull qwen3:0.6b
+ollama pull nomic-embed-text
+ 
 ```
 
 Elenca i modelli:
