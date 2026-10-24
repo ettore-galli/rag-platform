@@ -3,7 +3,7 @@ from rag_platform.comproot import ollama_model_client
 
 def try_ollama():
 
-    testo = "What temperature is pizza best cooked at?"
+    testo = "hi"
 
     embeddings = ollama_model_client.embed(
         input=[testo],
