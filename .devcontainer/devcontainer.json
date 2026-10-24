@@ -1,10 +1,5 @@
 {
     "name": "rag-platform-env",
-    // "build": {
-    //     "dockerfile": "Dockerfile",
-    //     "context": "..",
-    //     "target": "rag-image"
-    // },
     "workspaceFolder": "/workspace",
     "dockerComposeFile": [
         "docker-compose.yml"
@@ -21,10 +16,6 @@
             }
         }
     },
-    // "runArgs": [
-    //     "--env-file",
-    //     ".devcontainer/.env"
-    // ],
     "mounts": [
         "source=/Volumes/DOCKER/ollama-models,target=/mnt/models,type=bind"
     ],
