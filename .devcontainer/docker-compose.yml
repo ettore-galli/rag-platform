@@ -24,6 +24,7 @@ services:
 
     volumes:
       - ${EXTERNAL_MODEL_PATH}:/root/.ollama
+      - ../ollama_model_files:/root/ollama_model_files
 
     ports:
       - "11434:11434"

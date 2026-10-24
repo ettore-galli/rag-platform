@@ -1,0 +1,1 @@
+docker exec -it rag-platform_devcontainer-ollama-1 bash
