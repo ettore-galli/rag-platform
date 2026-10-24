@@ -1,0 +1,4 @@
+from rag_platform.common.configuration.rag_configuration import get_rag_configuration
+from rag_platform.model_client.ollama_model import OllamaModelClient
+
+ollama_model_client = OllamaModelClient(configuration=get_rag_configuration())
