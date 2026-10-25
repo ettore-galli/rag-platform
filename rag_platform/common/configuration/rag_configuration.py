@@ -55,10 +55,20 @@ class ChatConfiguration(DataClassDict):
 
 
 @dataclass(frozen=True)
+class VectorDbConfiguration(DataClassDict):
+    ENV_SECTION: ClassVar[str] = "VECTOR_DB"
+
+    postgres_db: str
+    postgres_user: str
+    postgres_password: str
+
+
+@dataclass(frozen=True)
 class RagConfiguration(DataClassDict):
     ollama_configuration: OllamaConfiguration
     embed_configuration: EmbedConfiguration
     chat_configuration: ChatConfiguration
+    vector_db_configuration: VectorDbConfiguration
 
 
 def get_rag_configuration(
@@ -75,6 +85,10 @@ def get_rag_configuration(
         ),
         chat_configuration=build_dataclass(
             ChatConfiguration,
+            prefix,
+        ),
+        vector_db_configuration=build_dataclass(
+            VectorDbConfiguration,
             prefix,
         ),
     )
