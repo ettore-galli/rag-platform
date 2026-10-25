@@ -28,5 +28,9 @@ def mock_environment_variables(monkeypatch):
             "TST_VECTOR_DB_POSTGRES_PASSWORD",
             "rag-password",
         ),
+        (
+            "TST_VECTOR_DB_POSTGRES_HOST",
+            "my-postgres-host",
+        ),
     ]:
         monkeypatch.setenv(variable, value)

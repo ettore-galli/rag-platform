@@ -14,6 +14,7 @@ def test_rag_configuration_gets_values_from_environment(mock_environment_variabl
     assert cfg.ollama_configuration.host == "http://test-host:11434"
     assert cfg.embed_configuration.model == "my-embed-model"
     assert cfg.chat_configuration.model == "my-chat-model"
+    assert cfg.vector_db_configuration.postgres_host == "my-postgres-host"
     assert cfg.vector_db_configuration.postgres_db == "rag"
     assert cfg.vector_db_configuration.postgres_user == "rag-user"
     assert cfg.vector_db_configuration.postgres_password == "rag-password"

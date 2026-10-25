@@ -1,4 +1,8 @@
-from rag_platform.comproot import ollama_model_client
+from rag_platform.comproot import db_conection, ollama_model_client
+
+
+def try_db():
+    print(db_conection)
 
 
 def try_ollama():
@@ -18,4 +22,4 @@ def try_ollama():
 
 
 if __name__ == "__main__":
-    try_ollama()
+    try_db()

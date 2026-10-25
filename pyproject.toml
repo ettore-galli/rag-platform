@@ -1,6 +1,9 @@
 [project]
 dependencies = [
-  "ollama==0.6.3"
+  "ollama==0.6.3",
+  "SQLAlchemy==2.1.6",
+  "pgvector==0.5.1",
+  "psycopg[binary]==3.3.6"
 ]
 description = "RAG platform"
 name = "rag-platform"

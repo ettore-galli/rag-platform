@@ -57,7 +57,7 @@ class ChatConfiguration(DataClassDict):
 @dataclass(frozen=True)
 class VectorDbConfiguration(DataClassDict):
     ENV_SECTION: ClassVar[str] = "VECTOR_DB"
-
+    postgres_host: str
     postgres_db: str
     postgres_user: str
     postgres_password: str
