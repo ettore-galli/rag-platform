@@ -41,6 +41,7 @@ services:
 
     volumes:
       - ${RAG_VECTOR_DB_POSTGRES_DATA_FOLDER}:/var/lib/postgresql/data
+      - ../postgres:/docker-entrypoint-initdb.d
 
     restart: unless-stopped
 
