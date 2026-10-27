@@ -15,11 +15,16 @@ def get_postgres_connection_string(configuration: RagConfiguration) -> str:
     )
 
 
-def get_postgres_session(configuration: RagConfiguration) -> scoped_session:
+def get_postgres_session_from_url(postgres_db_url: str) -> scoped_session:
 
-    engine = create_engine(
-        url=get_postgres_connection_string(configuration=configuration)
-    )
+    engine = create_engine(url=postgres_db_url)
 
     session_factory = sessionmaker(bind=engine)
     return cast(scoped_session, scoped_session(session_factory))
+
+
+def get_postgres_session(configuration: RagConfiguration) -> scoped_session:
+
+    return get_postgres_session_from_url(
+        postgres_db_url=get_postgres_connection_string(configuration=configuration)
+    )
