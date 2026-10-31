@@ -59,14 +59,14 @@ def test_insert_embeddings_adds_all_entities_and_commits():
             "embedding": [0.1, 0.2],
             "content": "first sentence",
             "file_name": "file1.txt",
-            "sentence_number": None,
+            "sentence_number": 1,
         },
         {
             "id": None,
             "embedding": [0.3, 0.4],
             "content": "second sentence",
             "file_name": "file2.txt",
-            "sentence_number": None,
+            "sentence_number": 2,
         },
     ]
 

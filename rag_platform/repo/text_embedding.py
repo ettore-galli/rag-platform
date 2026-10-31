@@ -11,11 +11,14 @@ class TextEmbeddingRepo(BaseRepo):
     def insert_embeddings(
         self, embeddings: list[list[float]], contents: list[str], file_names: list[str]
     ):
-        for embedding, content, file_name in zip(
-            embeddings, contents, file_names, strict=True
+        for index, (embedding, content, file_name) in enumerate(
+            zip(embeddings, contents, file_names, strict=True)
         ):
             new_embedding = TextEmbedding(
-                embedding=embedding, content=content, file_name=file_name
+                embedding=embedding,
+                content=content,
+                file_name=file_name,
+                sentence_number=index + 1,
             )
             self.session.add(new_embedding)
         self.session.commit()
@@ -42,4 +45,4 @@ class TextEmbeddingRepo(BaseRepo):
     ):
         return self.get_similar_embeddings_query(
             query_embedding=query_embedding, limit=limit
-        )
+        ).all()
