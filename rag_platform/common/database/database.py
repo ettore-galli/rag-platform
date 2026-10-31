@@ -20,7 +20,7 @@ def get_postgres_session_from_url(postgres_db_url: str) -> scoped_session:
     engine = create_engine(url=postgres_db_url)
 
     session_factory = sessionmaker(bind=engine)
-    return cast(scoped_session, scoped_session(session_factory))
+    return cast("scoped_session", scoped_session(session_factory))
 
 
 def get_postgres_session(configuration: RagConfiguration) -> scoped_session:

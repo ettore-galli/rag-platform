@@ -49,7 +49,7 @@ def test_insert_embeddings_adds_all_entities_and_commits():
     session.commit.assert_called_once_with()
 
     add_calls = [
-        cast(TextEmbedding, mock_call.args[0]).to_dict()
+        cast("TextEmbedding", mock_call.args[0]).to_dict()
         for mock_call in session.add.mock_calls
     ]
 

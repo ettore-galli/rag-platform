@@ -1,2 +1,2 @@
 def test_zero():
-    assert 0 == 0  # noqa: PLR0133
+    assert 0 == 0

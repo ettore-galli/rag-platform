@@ -3,7 +3,7 @@ dependencies = [
   "ollama==0.6.3",
   "SQLAlchemy==2.1.6",
   "pgvector==0.5.1",
-  "psycopg[binary]==3.3.6"
+  "psycopg[binary]==3.3.6",
 ]
 description = "RAG platform"
 name = "rag-platform"
@@ -18,6 +18,45 @@ dev = [
   "pytest>=9.0.3",
   "ruff>=0.15.12",
 ]
+
+[tool.ruff]
+line-length = 88
+src = ["rag_platform", "tests"]
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = [
+  "E501", # Linea troppo lunga (gestita dal formatter)
+]
+select = [
+  "F", # Pyflakes (nomi non definiti, import inutilizzati)
+  "E", # pycodestyle errors
+  "W", # pycodestyle warnings
+  "I", # isort (ordinamento import)
+  "N", # pep8-naming
+  "UP", # pyupgrade (sintassi moderna)
+  "B", # flake8-bugbear (bug comuni)
+  "SIM", # flake8-simplify
+  "C4", # flake8-comprehensions
+  "RUF", # Regole specifiche di Ruff
+  "PERF", # Perflint (anti-pattern di performance)
+  "TCH", # flake8-type-checking (import solo per tipi)
+  "C90", # McCabe complexity
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"] # re-export consentiti
+"tests/**/*.py" = [
+  "S101", # assert è il punto dei test
+  "PLR2004", # magic number nei dati di test
+  "ARG", # argomenti non usati (fixture)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["rag_platform"]
 
 [tool.pytest.ini_options]
 addopts = "-s -vvv"
