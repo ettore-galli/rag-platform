@@ -1,13 +1,18 @@
 import os
 from dataclasses import dataclass, fields
-from typing import ClassVar, get_type_hints
+from typing import ClassVar, cast, get_type_hints
 
 from rag_platform.common.dataclassdict import DataClassDict
 
 DEFAULT_CONFIGURATION_PREFIX: str = "RAG"
 
 
-def build_dataclass(class_to_build: type, prefix: str):
+@dataclass(frozen=True)
+class ConfigurationSectionBase(DataClassDict):
+    ENV_SECTION: ClassVar[str] = "BASE"
+
+
+def build_dataclass(class_to_build: type[ConfigurationSectionBase], prefix: str):
     values = {}
 
     type_hints = get_type_hints(class_to_build)
@@ -19,7 +24,7 @@ def build_dataclass(class_to_build: type, prefix: str):
             values[field.name] = build_dataclass(field_type, prefix)
             continue
 
-        section = class_to_build.ENV_SECTION
+        section: str = class_to_build.ENV_SECTION
 
         env_name = f"{prefix}_{section}_{field.name}".upper()
 
@@ -34,28 +39,28 @@ def build_dataclass(class_to_build: type, prefix: str):
 
 
 @dataclass(frozen=True)
-class OllamaConfiguration(DataClassDict):
+class OllamaConfiguration(ConfigurationSectionBase):
     ENV_SECTION: ClassVar[str] = "OLLAMA_CONFIGURATION"
 
     host: str
 
 
 @dataclass(frozen=True)
-class EmbedConfiguration(DataClassDict):
+class EmbedConfiguration(ConfigurationSectionBase):
     ENV_SECTION: ClassVar[str] = "EMBED_CONFIGURATION"
 
     model: str
 
 
 @dataclass(frozen=True)
-class ChatConfiguration(DataClassDict):
+class ChatConfiguration(ConfigurationSectionBase):
     ENV_SECTION: ClassVar[str] = "CHAT_CONFIGURATION"
 
     model: str
 
 
 @dataclass(frozen=True)
-class VectorDbConfiguration(DataClassDict):
+class VectorDbConfiguration(ConfigurationSectionBase):
     ENV_SECTION: ClassVar[str] = "VECTOR_DB"
     postgres_host: str
     postgres_db: str
@@ -64,7 +69,7 @@ class VectorDbConfiguration(DataClassDict):
 
 
 @dataclass(frozen=True)
-class RagConfiguration(DataClassDict):
+class RagConfiguration(ConfigurationSectionBase):
     ollama_configuration: OllamaConfiguration
     embed_configuration: EmbedConfiguration
     chat_configuration: ChatConfiguration
@@ -75,20 +80,32 @@ def get_rag_configuration(
     prefix: str = DEFAULT_CONFIGURATION_PREFIX,
 ) -> RagConfiguration:
     return RagConfiguration(
-        ollama_configuration=build_dataclass(
-            OllamaConfiguration,
-            prefix,
+        ollama_configuration=cast(
+            "OllamaConfiguration",
+            build_dataclass(
+                OllamaConfiguration,
+                prefix,
+            ),
         ),
-        embed_configuration=build_dataclass(
-            EmbedConfiguration,
-            prefix,
+        embed_configuration=cast(
+            "EmbedConfiguration",
+            build_dataclass(
+                EmbedConfiguration,
+                prefix,
+            ),
         ),
-        chat_configuration=build_dataclass(
-            ChatConfiguration,
-            prefix,
+        chat_configuration=cast(
+            "ChatConfiguration",
+            build_dataclass(
+                ChatConfiguration,
+                prefix,
+            ),
         ),
-        vector_db_configuration=build_dataclass(
-            VectorDbConfiguration,
-            prefix,
+        vector_db_configuration=cast(
+            "VectorDbConfiguration",
+            build_dataclass(
+                VectorDbConfiguration,
+                prefix,
+            ),
         ),
     )

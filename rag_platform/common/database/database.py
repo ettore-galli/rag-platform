@@ -1,7 +1,5 @@
-from typing import cast
-
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
 
@@ -15,15 +13,15 @@ def get_postgres_connection_string(configuration: RagConfiguration) -> str:
     )
 
 
-def get_postgres_session_from_url(postgres_db_url: str) -> scoped_session:
+def get_postgres_session_from_url(postgres_db_url: str) -> scoped_session[Session]:
 
     engine = create_engine(url=postgres_db_url)
 
     session_factory = sessionmaker(bind=engine)
-    return cast("scoped_session", scoped_session(session_factory))
+    return scoped_session(session_factory)
 
 
-def get_postgres_session(configuration: RagConfiguration) -> scoped_session:
+def get_postgres_session(configuration: RagConfiguration) -> scoped_session[Session]:
 
     return get_postgres_session_from_url(
         postgres_db_url=get_postgres_connection_string(configuration=configuration)

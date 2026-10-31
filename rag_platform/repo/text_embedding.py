@@ -22,7 +22,7 @@ class TextEmbeddingRepo(BaseRepo):
 
     def get_similar_embeddings_query(
         self, query_embedding: list[float], limit: int
-    ) -> Query:
+    ) -> Query[TextEmbedding]:
         return (
             self.session.query(
                 TextEmbedding.id,

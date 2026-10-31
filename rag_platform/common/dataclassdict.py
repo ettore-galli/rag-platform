@@ -1,5 +1,5 @@
 class DataClassDict:
-    def __getitem__(self, key):
+    def __getitem__(self, key: str):
         try:
             return getattr(self, key)
         except AttributeError:

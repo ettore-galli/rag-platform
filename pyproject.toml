@@ -58,5 +58,14 @@ max-complexity = 10
 [tool.ruff.lint.isort]
 known-first-party = ["rag_platform"]
 
+
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/__pycache__", ".venv"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+reportMissingTypeStubs = "warning"       
+reportUnnecessaryTypeIgnoreComment = "error"  # ignora commenti type: ignore diventati inutili
+
 [tool.pytest.ini_options]
 addopts = "-s -vvv"

@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture(autouse=False)
-def mock_environment_variables(monkeypatch):
+def mock_environment_variables(monkeypatch: pytest.MonkeyPatch) -> None:
     for variable, value in [
         (
             "TST_OLLAMA_CONFIGURATION_HOST",

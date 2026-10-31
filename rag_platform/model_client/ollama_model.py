@@ -21,6 +21,6 @@ class OllamaModelClient:
         self,
         messages: Sequence[Mapping[str, Any] | Message] | None = None,
     ) -> ChatResponse:
-        return self.client.chat(
+        return self.client.chat(  # type: ignore[reportUnknownMemberType]
             model=self.configuration.chat_configuration.model, messages=messages
         )
