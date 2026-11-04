@@ -4,7 +4,7 @@ dependencies = [
   "SQLAlchemy==2.1.6",
   "pgvector==0.5.1",
   "psycopg[binary]==3.3.6",
-  "docling==2.145.0",
+  "pymupdf==2.1",
 ]
 description = "RAG platform"
 name = "rag-platform"
@@ -61,7 +61,7 @@ known-first-party = ["rag_platform"]
 
 [tool.pyright]
 exclude = ["**/__pycache__", ".venv"] 
-include = ["src", "tests"] 
+include = ["rag_platform", "tests"] 
 pythonVersion = "3.12" 
 reportMissingTypeStubs = "warning" 
 reportUnnecessaryTypeIgnoreComment = "error" # ignora commenti type: ignore diventati inutili
