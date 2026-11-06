@@ -13,6 +13,6 @@ class BaseTextExtractor:
         self.configuration = configuration
 
     @abstractmethod
-    def convert_document(
+    def extract_text_content(
         self, document_source_identifier: DocumentSourceIdentifier
     ) -> DocumentExtractionResult: ...
