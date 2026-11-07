@@ -10,6 +10,7 @@ services:
 
     volumes:
       - ..:/workspace:cached
+      - ${RAG_DOCUMENT_CORPUS_ROOT_DIRECTORY}:/documents-root
 
     command: sleep infinity
 

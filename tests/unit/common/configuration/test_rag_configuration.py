@@ -24,3 +24,4 @@ def test_rag_configuration_gets_values_from_environment(
     assert cfg.vector_db_configuration.postgres_db == "rag"
     assert cfg.vector_db_configuration.postgres_user == "rag-user"
     assert cfg.vector_db_configuration.postgres_password == "rag-password"
+    assert cfg.document_corpus.root_directory == "/path/to/documents"

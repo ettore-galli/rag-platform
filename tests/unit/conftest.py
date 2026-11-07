@@ -32,5 +32,9 @@ def mock_environment_variables(monkeypatch: pytest.MonkeyPatch) -> None:
             "TST_VECTOR_DB_POSTGRES_HOST",
             "my-postgres-host",
         ),
+        (
+            "TST_DOCUMENT_CORPUS_ROOT_DIRECTORY",
+            "/path/to/documents",
+        ),
     ]:
         monkeypatch.setenv(variable, value)

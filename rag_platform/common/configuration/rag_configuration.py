@@ -69,11 +69,19 @@ class VectorDbConfiguration(ConfigurationSectionBase):
 
 
 @dataclass(frozen=True)
+class DocumentCorpusConfiguration(ConfigurationSectionBase):
+    ENV_SECTION: ClassVar[str] = "DOCUMENT_CORPUS"
+
+    root_directory: str
+
+
+@dataclass(frozen=True)
 class RagConfiguration(ConfigurationSectionBase):
     ollama_configuration: OllamaConfiguration
     embed_configuration: EmbedConfiguration
     chat_configuration: ChatConfiguration
     vector_db_configuration: VectorDbConfiguration
+    document_corpus: DocumentCorpusConfiguration
 
 
 def get_rag_configuration(
@@ -105,6 +113,13 @@ def get_rag_configuration(
             "VectorDbConfiguration",
             build_dataclass(
                 VectorDbConfiguration,
+                prefix,
+            ),
+        ),
+        document_corpus=cast(
+            "DocumentCorpusConfiguration",
+            build_dataclass(
+                DocumentCorpusConfiguration,
                 prefix,
             ),
         ),
