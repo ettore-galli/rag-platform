@@ -1,17 +1,12 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from ollama import ChatResponse, Client, EmbedResponse, Message
+from ollama import ChatResponse, EmbedResponse, Message
 
-from rag_platform.common.configuration.rag_configuration import RagConfiguration
+from rag_platform.model_client.base import BaseModelClient
 
 
-class OllamaModelClient:
-    def __init__(self, configuration: RagConfiguration):
-        super().__init__()
-        self.configuration = configuration
-        self.client: Client = Client(host=self.configuration.ollama_configuration.host)
-
+class OllamaModelClient(BaseModelClient):
     def embed(self, input: str | Sequence[str] = "") -> EmbedResponse:
         return self.client.embed(
             model=self.configuration.embed_configuration.model, input=input
