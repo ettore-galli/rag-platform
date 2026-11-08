@@ -1,7 +1,7 @@
 import logging
 from collections.abc import Iterable
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
@@ -72,9 +72,14 @@ class RagLoader:
             )
             for text in document_text.values():
                 text_embeddings = self.embed_model_client.embed(input=text)
-
-                self.text_embedding_repo.insert_embeddings(
-                    embeddings=cast("list[list[float]]", text_embeddings.embeddings),
-                    contents=[text],
-                    file_names=[document.name],
+                embeddings: list[list[float]] = cast(
+                    "list[list[float]]", text_embeddings.embeddings
                 )
+                contents: list[Any] = [text]
+                file_names: list[str] = [document.name]
+                if len(embeddings) == len(contents) == len(file_names):
+                    self.text_embedding_repo.insert_embeddings(
+                        embeddings=embeddings,
+                        contents=contents,
+                        file_names=file_names,
+                    )
