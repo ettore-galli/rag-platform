@@ -70,16 +70,23 @@ class RagLoader:
             document_text: DocumentExtractionResult = (
                 text_extractor.extract_text_content(document_source_identifier=document)
             )
+
+            embeddings: list[list[float]] = []
+            contents: list[Any] = []
+            file_names: list[str] = []
+
             for text in document_text.values():
                 text_embeddings = self.embed_model_client.embed(input=text)
-                embeddings: list[list[float]] = cast(
-                    "list[list[float]]", text_embeddings.embeddings
-                )
-                contents: list[Any] = [text]
-                file_names: list[str] = [document.name]
-                if len(embeddings) == len(contents) == len(file_names):
-                    self.text_embedding_repo.insert_embeddings(
-                        embeddings=embeddings,
-                        contents=contents,
-                        file_names=file_names,
+
+                if len(text_embeddings.embeddings) == 1:
+                    embeddings.extend(
+                        cast("list[list[float]]", text_embeddings.embeddings)
                     )
+                    contents.append(text)
+                    file_names.append(document.name)
+
+            self.text_embedding_repo.insert_embeddings(
+                embeddings=embeddings,
+                contents=contents,
+                file_names=file_names,
+            )

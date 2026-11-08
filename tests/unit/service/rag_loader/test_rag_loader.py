@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from pathlib import Path
 from unittest.mock import MagicMock, call, patch
 
@@ -63,7 +64,11 @@ def test_load_document_corpus(
     embed_response = MagicMock(spec=EmbedResponse)
     embed_response.embeddings = [[0.1, 0.2, 0.3]]
 
-    embed_model_client.embed.return_value = embed_response
+    def dummy_embed(input: str | Sequence[str] = "") -> EmbedResponse:
+        _ = input
+        return EmbedResponse(embeddings=[[0.1, 0.2, 0.3]])
+
+    embed_model_client.embed.side_effect = dummy_embed
 
     text_embedding_repo = MagicMock()
 
@@ -106,24 +111,14 @@ def test_load_document_corpus(
         "testo tre",
     ]
 
-    assert text_embedding_repo.insert_embeddings.call_count == 3
+    assert text_embedding_repo.insert_embeddings.call_count == 1
 
     text_embedding_repo.insert_embeddings.assert_has_calls(
         [
             call(
-                embeddings=[[0.1, 0.2, 0.3]],
-                contents=["testo uno"],
-                file_names=["example.pdf"],
-            ),
-            call(
-                embeddings=[[0.1, 0.2, 0.3]],
-                contents=["testo due"],
-                file_names=["example.pdf"],
-            ),
-            call(
-                embeddings=[[0.1, 0.2, 0.3]],
-                contents=["testo tre"],
-                file_names=["example.pdf"],
-            ),
+                embeddings=[[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]],
+                contents=["testo uno", "testo due", "testo tre"],
+                file_names=["example.pdf", "example.pdf", "example.pdf"],
+            )
         ]
     )
