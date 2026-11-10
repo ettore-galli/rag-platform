@@ -9,6 +9,7 @@ from rag_platform.common.database.database import get_postgres_session
 from rag_platform.model_client.ollama_model import OllamaModelClient
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 from rag_platform.service.rag_loader.rag_loader import RagLoader
+from rag_platform.service.rag_search.rag_search import RagSearch
 from rag_platform.text_extraction.common import BaseTextExtractor
 from rag_platform.text_extraction.pdf_text_extractor import PdfTextExtractor
 
@@ -27,6 +28,13 @@ rag_loader = RagLoader(
     root_directory=Path("/documents-root/arduino"),
     file_types={RagCorpusFileTypes.PDF},
     text_extractors_map={RagCorpusFileTypes.PDF: pdf_text_extractor},
+    embed_model_client=ollama_model_client,
+    text_embedding_repo=text_embedding_repo,
+    logger=None,
+)
+
+rag_search = RagSearch(
+    configuration=configuration,
     embed_model_client=ollama_model_client,
     text_embedding_repo=text_embedding_repo,
     logger=None,
