@@ -85,6 +85,7 @@ def test_search(
                 embeddings=[[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]],
                 contents=["testo uno", "testo due", "testo tre"],
                 file_names=["example.pdf", "example.pdf", "example.pdf"],
+                file_uuids=["<example.pdf>", "<example.pdf>", "<example.pdf>"],
             )
         ]
     )

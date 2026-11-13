@@ -11,4 +11,5 @@ class TextEmbedding(DbModelBase):
     embedding: Mapped[list[float]] = mapped_column(Vector)
     content: Mapped[str] = mapped_column()
     file_name: Mapped[str] = mapped_column()
+    file_uuid: Mapped[str] = mapped_column()
     sentence_number: Mapped[int | None] = mapped_column(nullable=True)

@@ -7,6 +7,7 @@ def test_text_embedding_model_behaviour():
         embedding=[1, 2, 3],
         content="content",
         file_name="filename",
+        file_uuid="file-uuid",
         sentence_number=1,
     )
 
@@ -14,4 +15,5 @@ def test_text_embedding_model_behaviour():
     assert instance.embedding == [1, 2, 3]
     assert instance.content == "content"
     assert instance.file_name == "filename"
+    assert instance.file_uuid == "file-uuid"
     assert instance.sentence_number == 1

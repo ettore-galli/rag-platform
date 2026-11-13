@@ -9,15 +9,20 @@ class TextEmbeddingRepo(BaseRepo):
     VECTOR_DISTANCE_LABEL: str = "distance"
 
     def insert_embeddings(
-        self, embeddings: list[list[float]], contents: list[str], file_names: list[str]
+        self,
+        embeddings: list[list[float]],
+        contents: list[str],
+        file_names: list[str],
+        file_uuids: list[str],
     ):
-        for index, (embedding, content, file_name) in enumerate(
-            zip(embeddings, contents, file_names, strict=True)
+        for index, (embedding, content, file_name, file_uuid) in enumerate(
+            zip(embeddings, contents, file_names, file_uuids, strict=True)
         ):
             new_embedding = TextEmbedding(
                 embedding=embedding,
                 content=content,
                 file_name=file_name,
+                file_uuid=file_uuid,
                 sentence_number=index + 1,
             )
             self.session.add(new_embedding)
@@ -32,6 +37,7 @@ class TextEmbeddingRepo(BaseRepo):
                 TextEmbedding.sentence_number,
                 TextEmbedding.content,
                 TextEmbedding.file_name,
+                TextEmbedding.file_uuid,
                 TextEmbedding.embedding.cosine_distance(query_embedding).label(
                     TextEmbeddingRepo.VECTOR_DISTANCE_LABEL
                 ),
