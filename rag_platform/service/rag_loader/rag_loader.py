@@ -5,6 +5,7 @@ from typing import Any, cast
 
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
+from rag_platform.common.utilities.file_hash import FileHashCalculatorBase
 from rag_platform.model_client.base import BaseModelClient
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 from rag_platform.text_extraction.common import (
@@ -26,6 +27,7 @@ class RagLoader:
         text_extractors_map: TextExtractorsMap,
         embed_model_client: BaseModelClient,
         text_embedding_repo: TextEmbeddingRepo,
+        file_hash_calculator: FileHashCalculatorBase,
         logger: logging.Logger | None = None,
     ) -> None:
         self.configuration: RagConfiguration = configuration
@@ -36,6 +38,8 @@ class RagLoader:
         self.text_extractors_map: TextExtractorsMap = text_extractors_map
         self.embed_model_client: BaseModelClient = embed_model_client
         self.text_embedding_repo: TextEmbeddingRepo = text_embedding_repo
+
+        self.file_hash_calculator: FileHashCalculatorBase = file_hash_calculator
 
         self.logger = logger or logging.getLogger(__name__)
 
@@ -71,6 +75,8 @@ class RagLoader:
                 text_extractor.extract_text_content(document_source_identifier=document)
             )
 
+            file_hash = self.file_hash_calculator.get_file_hash(file_path=document)
+
             embeddings: list[list[float]] = []
             contents: list[Any] = []
             file_names: list[str] = []
@@ -85,7 +91,7 @@ class RagLoader:
                     )
                     contents.append(text)
                     file_names.append(document.name)
-                    file_hash = f"<{document.name}>"
+
                     file_hashes.append(file_hash)
 
             self.text_embedding_repo.insert_embeddings(

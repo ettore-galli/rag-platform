@@ -6,6 +6,7 @@ from rag_platform.common.configuration.rag_configuration import (
     get_rag_configuration,
 )
 from rag_platform.common.database.database import get_postgres_session
+from rag_platform.common.utilities.file_hash import FileHashCalculator
 from rag_platform.model_client.ollama_model import OllamaModelClient
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 from rag_platform.service.rag_loader.rag_loader import RagLoader
@@ -23,6 +24,8 @@ text_embedding_repo = TextEmbeddingRepo(session=db_conection)
 
 pdf_text_extractor: BaseTextExtractor = PdfTextExtractor(configuration=configuration)
 
+file_hash_calculator: FileHashCalculator = FileHashCalculator()
+
 rag_loader = RagLoader(
     configuration=configuration,
     root_directory=Path("/documents-root/arduino"),
@@ -30,6 +33,7 @@ rag_loader = RagLoader(
     text_extractors_map={RagCorpusFileTypes.PDF: pdf_text_extractor},
     embed_model_client=ollama_model_client,
     text_embedding_repo=text_embedding_repo,
+    file_hash_calculator=file_hash_calculator,
     logger=None,
 )
 

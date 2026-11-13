@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 from ollama import EmbedResponse
+from tests.unit.service.common import DummyFileHashCalculator
 
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import get_rag_configuration
@@ -47,6 +48,7 @@ def test_search(
         },
         embed_model_client=embed_model_client,
         text_embedding_repo=text_embedding_repo,
+        file_hash_calculator=DummyFileHashCalculator(),
     )
 
     with patch.object(
