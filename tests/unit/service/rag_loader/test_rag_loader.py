@@ -119,7 +119,7 @@ def test_load_document_corpus(
                 embeddings=[[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]],
                 contents=["testo uno", "testo due", "testo tre"],
                 file_names=["example.pdf", "example.pdf", "example.pdf"],
-                file_uuids=["<example.pdf>", "<example.pdf>", "<example.pdf>"],
+                file_hashes=["<example.pdf>", "<example.pdf>", "<example.pdf>"],
             )
         ]
     )

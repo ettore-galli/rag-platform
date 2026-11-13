@@ -74,7 +74,7 @@ class RagLoader:
             embeddings: list[list[float]] = []
             contents: list[Any] = []
             file_names: list[str] = []
-            file_uuids: list[str] = []
+            file_hashes: list[str] = []
 
             for text in document_text.values():
                 text_embeddings = self.embed_model_client.embed(input=text)
@@ -85,12 +85,12 @@ class RagLoader:
                     )
                     contents.append(text)
                     file_names.append(document.name)
-                    file_uuid = f"<{document.name}>"
-                    file_uuids.append(file_uuid)
+                    file_hash = f"<{document.name}>"
+                    file_hashes.append(file_hash)
 
             self.text_embedding_repo.insert_embeddings(
                 embeddings=embeddings,
                 contents=contents,
                 file_names=file_names,
-                file_uuids=file_uuids,
+                file_hashes=file_hashes,
             )

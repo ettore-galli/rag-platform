@@ -25,16 +25,16 @@ def test_insert_embeddings_adds_all_entities_and_commits():
         "file2.txt",
     ]
 
-    file_uuids = [
-        "uuid-1",
-        "uuid-2",
+    file_hashes = [
+        "hash-1",
+        "hash-2",
     ]
 
     repo.insert_embeddings(
         embeddings=embeddings,
         contents=contents,
         file_names=file_names,
-        file_uuids=file_uuids,
+        file_hashes=file_hashes,
     )
 
     assert session.add.call_count == 2
@@ -65,7 +65,7 @@ def test_insert_embeddings_adds_all_entities_and_commits():
             "embedding": [0.1, 0.2],
             "content": "first sentence",
             "file_name": "file1.txt",
-            "file_uuid": "uuid-1",
+            "file_hash": "hash-1",
             "sentence_number": 1,
         },
         {
@@ -73,7 +73,7 @@ def test_insert_embeddings_adds_all_entities_and_commits():
             "embedding": [0.3, 0.4],
             "content": "second sentence",
             "file_name": "file2.txt",
-            "file_uuid": "uuid-2",
+            "file_hash": "hash-2",
             "sentence_number": 2,
         },
     ]
@@ -87,7 +87,7 @@ def test_get_similar_embeddings_query():
     query = repo.get_similar_embeddings_query(query_embedding=[1, 2, 3], limit=3)
 
     assert render_query(query).replace("\n", " ") == (
-        "SELECT text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_uuid, text_embeddings.embedding <=> '[1.0,2.0,3.0]' AS distance  "
+        "SELECT text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, text_embeddings.embedding <=> '[1.0,2.0,3.0]' AS distance  "
         "FROM text_embeddings ORDER BY distance  "
         "LIMIT 3"
     )
