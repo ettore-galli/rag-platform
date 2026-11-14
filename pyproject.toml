@@ -5,6 +5,7 @@ dependencies = [
   "pgvector==0.5.1",
   "psycopg[binary]==3.3.6",
   "pymupdf==2.1",
+  "click==8.5.0",
 ]
 description = "RAG platform"
 name = "rag-platform"
