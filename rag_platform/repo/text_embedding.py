@@ -100,3 +100,13 @@ class TextEmbeddingRepo(BaseRepo):
                 <= base_embedding.sentence_number + group_window_size
             )
         )
+
+    def get_surrounding_sentences(
+        self, base_embedding: TextEmbeddingDTO, group_window_size: int
+    ) -> list[TextEmbeddingDTO]:
+        return [
+            TextEmbeddingRepo.get_dto_from_result(row)
+            for row in self.get_surrounding_sentences_query(
+                base_embedding=base_embedding, group_window_size=group_window_size
+            ).all()
+        ]
