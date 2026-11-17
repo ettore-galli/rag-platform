@@ -2,7 +2,7 @@ from typing import cast
 from unittest.mock import Mock
 
 from rag_platform.common.database.tools import get_figurative_session, render_query
-from rag_platform.db_models.text_embeddings import TextEmbedding
+from rag_platform.db_models.text_embeddings import TextEmbedding, TextEmbeddingDTO
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 
 
@@ -90,4 +90,33 @@ def test_get_similar_embeddings_query():
         "SELECT text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, text_embeddings.embedding <=> '[1.0,2.0,3.0]' AS distance  "
         "FROM text_embeddings ORDER BY distance  "
         "LIMIT 3"
+    )
+
+
+def test_get_surrounding_sentences_query():
+    figurative_session = get_figurative_session()
+
+    repo = TextEmbeddingRepo(session=figurative_session)
+
+    base: TextEmbeddingDTO = TextEmbeddingDTO(
+        id=1,
+        embedding=[1.0, 2.0, 3.0],
+        content="The quick brown fox",
+        file_name="Fox stories",
+        file_hash="123123123",
+        sentence_number=65,
+        distance=1,
+    )
+
+    query = repo.get_surrounding_sentences_query(
+        base_embedding=base, group_window_size=3
+    )
+
+    assert render_query(query).replace("\n", " ") == (
+        "SELECT "
+        "text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, 0.0 AS distance  "
+        "FROM text_embeddings  "
+        "WHERE text_embeddings.file_hash = '123123123' "
+        "AND text_embeddings.sentence_number >= 62 "
+        "AND text_embeddings.sentence_number <= 68"
     )

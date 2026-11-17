@@ -1,12 +1,13 @@
 import logging
 from typing import TYPE_CHECKING, cast
 
+from rag_platform.db_models.text_embeddings import TextEmbeddingDTO
+
 if TYPE_CHECKING:
     from ollama import EmbedResponse
 
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
-from rag_platform.db_models.text_embeddings import TextEmbedding
 from rag_platform.model_client.base import BaseModelClient
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 from rag_platform.text_extraction.common import (
@@ -31,7 +32,7 @@ class RagSearch:
 
         self.logger = logger or logging.getLogger(__name__)
 
-    def search(self, query: str) -> list[TextEmbedding]:
+    def search(self, query: str) -> list[TextEmbeddingDTO]:
 
         query_embeddings: EmbedResponse = self.embed_model_client.embed(input=query)
 

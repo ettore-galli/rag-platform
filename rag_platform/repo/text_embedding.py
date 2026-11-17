@@ -1,7 +1,17 @@
+from sqlalchemy import Row, literal
 from sqlalchemy.orm import Query
 from tests.unit.repo.base import BaseRepo
 
-from rag_platform.db_models.text_embeddings import TextEmbedding
+from rag_platform.db_models.text_embeddings import TextEmbedding, TextEmbeddingDTO
+
+type EmbeddingQueryResult = Row[
+    int,
+    int,
+    str,
+    str,
+    str,
+    float,
+]
 
 
 class TextEmbeddingRepo(BaseRepo):
@@ -30,7 +40,7 @@ class TextEmbeddingRepo(BaseRepo):
 
     def get_similar_embeddings_query(
         self, query_embedding: list[float], limit: int
-    ) -> Query[TextEmbedding]:
+    ) -> Query[EmbeddingQueryResult]:
         return (
             self.session.query(
                 TextEmbedding.id,
@@ -46,9 +56,47 @@ class TextEmbeddingRepo(BaseRepo):
             .limit(limit)
         )
 
+    @staticmethod
+    def get_dto_from_result(result: EmbeddingQueryResult) -> TextEmbeddingDTO:
+        return TextEmbeddingDTO(
+            id=result.id,
+            embedding=result.embedding,
+            content=result.content,
+            file_name=result.filename,
+            file_hash=result.file_hash,
+            sentence_number=result.sentence_number,
+            distance=result.distance,
+        )
+
     def get_similar_embeddings(
         self, query_embedding: list[float], limit: int = DEFAULT_QUERY_LIMIT
-    ):
-        return self.get_similar_embeddings_query(
-            query_embedding=query_embedding, limit=limit
-        ).all()
+    ) -> list[TextEmbeddingDTO]:
+        return [
+            TextEmbeddingRepo.get_dto_from_result(row)
+            for row in self.get_similar_embeddings_query(
+                query_embedding=query_embedding, limit=limit
+            ).all()
+        ]
+
+    def get_surrounding_sentences_query(
+        self, base_embedding: TextEmbeddingDTO, group_window_size: int
+    ) -> Query[EmbeddingQueryResult]:
+        return (
+            self.session.query(
+                TextEmbedding.id,
+                TextEmbedding.sentence_number,
+                TextEmbedding.content,
+                TextEmbedding.file_name,
+                TextEmbedding.file_hash,
+                literal(0.0).label(TextEmbeddingRepo.VECTOR_DISTANCE_LABEL),
+            )
+            .filter(TextEmbedding.file_hash == base_embedding.file_hash)
+            .filter(
+                TextEmbedding.sentence_number
+                >= base_embedding.sentence_number - group_window_size
+            )
+            .filter(
+                TextEmbedding.sentence_number
+                <= base_embedding.sentence_number + group_window_size
+            )
+        )
