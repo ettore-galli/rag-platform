@@ -9,7 +9,10 @@ if TYPE_CHECKING:
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
 from rag_platform.model_client.base import BaseModelClient
-from rag_platform.repo.text_embedding import TextEmbeddingRepo
+from rag_platform.repo.text_embedding import (
+    TextEmbeddingRepo,
+    TextEmbeddingSearchResult,
+)
 from rag_platform.text_extraction.common import (
     BaseTextExtractor,
 )
@@ -32,6 +35,15 @@ class RagSearch:
 
         self.logger = logger or logging.getLogger(__name__)
 
+    @staticmethod
+    def get_merged_search_results(
+        search_results: TextEmbeddingSearchResult,
+    ) -> TextEmbeddingSearchResult:
+        records_map = {
+            (item.file_hash, item.sentence_number): item for item in search_results
+        }
+        return [records_map[key] for key in sorted(records_map.keys())]
+
     def search(self, query: str) -> list[TextEmbeddingDTO]:
 
         query_embeddings: EmbedResponse = self.embed_model_client.embed(input=query)
@@ -45,4 +57,6 @@ class RagSearch:
             for embedding in cast("list[list[float]]", query_embeddings.embeddings)
         ]
 
-        return [item for result in search_results for item in result]
+        return RagSearch.get_merged_search_results(
+            [item for result in search_results for item in result]
+        )

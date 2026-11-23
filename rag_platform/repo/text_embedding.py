@@ -2,7 +2,10 @@ from sqlalchemy import Row, literal
 from sqlalchemy.orm import Query
 from tests.unit.repo.base import BaseRepo
 
-from rag_platform.db_models.text_embeddings import TextEmbedding, TextEmbeddingDTO
+from rag_platform.db_models.text_embeddings import (
+    TextEmbedding,
+    TextEmbeddingDTO,
+)
 
 type EmbeddingQueryResult = Row[
     int,
@@ -12,6 +15,8 @@ type EmbeddingQueryResult = Row[
     str,
     float,
 ]
+
+type TextEmbeddingSearchResult = list[TextEmbeddingDTO]
 
 
 class TextEmbeddingRepo(BaseRepo):
