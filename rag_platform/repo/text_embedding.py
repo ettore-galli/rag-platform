@@ -10,6 +10,7 @@ from rag_platform.db_models.text_embeddings import (
 type EmbeddingQueryResult = Row[
     int,
     int,
+    list[float],
     str,
     str,
     str,
@@ -50,6 +51,7 @@ class TextEmbeddingRepo(BaseRepo):
             self.session.query(
                 TextEmbedding.id,
                 TextEmbedding.sentence_number,
+                TextEmbedding.embedding,
                 TextEmbedding.content,
                 TextEmbedding.file_name,
                 TextEmbedding.file_hash,
@@ -67,7 +69,7 @@ class TextEmbeddingRepo(BaseRepo):
             id=result.id,
             embedding=result.embedding,
             content=result.content,
-            file_name=result.filename,
+            file_name=result.file_name,
             file_hash=result.file_hash,
             sentence_number=result.sentence_number,
             distance=result.distance,
@@ -90,6 +92,7 @@ class TextEmbeddingRepo(BaseRepo):
             self.session.query(
                 TextEmbedding.id,
                 TextEmbedding.sentence_number,
+                TextEmbedding.embedding,
                 TextEmbedding.content,
                 TextEmbedding.file_name,
                 TextEmbedding.file_hash,

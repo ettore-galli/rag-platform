@@ -11,7 +11,7 @@ def cli() -> None:
 
 @cli.command()
 def acquire() -> None:
-    print(load_documents())
+    load_documents()
 
 
 @cli.command()

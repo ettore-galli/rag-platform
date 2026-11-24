@@ -87,7 +87,8 @@ def test_get_similar_embeddings_query():
     query = repo.get_similar_embeddings_query(query_embedding=[1, 2, 3], limit=3)
 
     assert render_query(query).replace("\n", " ") == (
-        "SELECT text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, text_embeddings.embedding <=> '[1.0,2.0,3.0]' AS distance  "
+        "SELECT text_embeddings.id, text_embeddings.sentence_number, "
+        "text_embeddings.embedding, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, text_embeddings.embedding <=> '[1.0,2.0,3.0]' AS distance  "
         "FROM text_embeddings ORDER BY distance  "
         "LIMIT 3"
     )
@@ -114,7 +115,8 @@ def test_get_surrounding_sentences_query():
 
     assert render_query(query).replace("\n", " ") == (
         "SELECT "
-        "text_embeddings.id, text_embeddings.sentence_number, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, 0.0 AS distance  "
+        "text_embeddings.id, text_embeddings.sentence_number, "
+        "text_embeddings.embedding, text_embeddings.content, text_embeddings.file_name, text_embeddings.file_hash, 0.0 AS distance  "
         "FROM text_embeddings  "
         "WHERE text_embeddings.file_hash = '123123123' "
         "AND text_embeddings.sentence_number >= 62 "

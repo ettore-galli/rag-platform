@@ -1,5 +1,5 @@
 from rag_platform.comproot import rag_loader
 
 
-def load_documents():
+def load_documents() -> None:
     rag_loader.load_document_corpus()

@@ -2,10 +2,10 @@ from unittest.mock import ANY, MagicMock, call
 
 import pytest
 from ollama import EmbedResponse
-from rag_platform.db_models.text_embeddings import TextEmbeddingDTO
-from rag_platform.service.rag_search.rag_search import RagSearch
 
 from rag_platform.common.configuration.rag_configuration import get_rag_configuration
+from rag_platform.db_models.text_embeddings import TextEmbeddingDTO
+from rag_platform.service.rag_search.rag_search import RagSearch
 
 
 def test_search(
