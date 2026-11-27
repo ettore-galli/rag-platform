@@ -28,7 +28,7 @@ file_hash_calculator: FileHashCalculator = FileHashCalculator()
 
 rag_loader = RagLoader(
     configuration=configuration,
-    root_directory=Path("/documents-root/arduino"),
+    root_directory=Path(configuration.document_corpus.root_directory),
     file_types={RagCorpusFileTypes.PDF},
     text_extractors_map={RagCorpusFileTypes.PDF: pdf_text_extractor},
     embed_model_client=ollama_model_client,

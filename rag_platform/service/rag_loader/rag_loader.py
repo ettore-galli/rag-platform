@@ -85,11 +85,11 @@ class RagLoader(RagLoaderBase):
             if path.is_file() and RagLoader.infer_file_type(path) in file_types
         )
 
-    def load_document_corpus(self) -> None:
+    def load_document_corpus(self, root_directory: Path) -> None:
 
         document_files_list: list[Path] = list(
             self.list_document_files(
-                root_directory=self.root_directory, file_types=self.file_types
+                root_directory=root_directory, file_types=self.file_types
             )
         )
 
@@ -97,6 +97,7 @@ class RagLoader(RagLoaderBase):
 
         for document_index, document in enumerate(document_files_list):
             current_file: int = document_index + 1
+
             self.show_load_progress(
                 status=RagLoaderProcessStatus(
                     file_name=str(document),
@@ -105,6 +106,19 @@ class RagLoader(RagLoaderBase):
                     file_process_step="START",
                 )
             )
+
+            file_hash = self.file_hash_calculator.get_file_hash(file_path=document)
+
+            if self.text_embedding_repo.is_file_already_acquired(file_hash=file_hash):
+                self.show_load_progress(
+                    status=RagLoaderProcessStatus(
+                        total_files=total_files,
+                        current_file=current_file,
+                        file_process_step="FILE ALREADY ACQUIRED / SKIPPED",
+                    )
+                )
+                continue
+
             text_extractor: BaseTextExtractor = self.text_extractors_map.get(
                 RagLoader.infer_file_type(document),
                 NullTextExtractor(configuration=self.configuration),
@@ -121,20 +135,6 @@ class RagLoader(RagLoaderBase):
                     file_process_step="CONTENT READ",
                 )
             )
-
-            file_hash = self.file_hash_calculator.get_file_hash(file_path=document)
-
-            if self.text_embedding_repo.is_file_already_acquired_query(
-                file_hash=file_hash
-            ):
-                self.show_load_progress(
-                    status=RagLoaderProcessStatus(
-                        total_files=total_files,
-                        current_file=current_file,
-                        file_process_step="FILE ALREADY ACQUIRED / SKIPPED",
-                    )
-                )
-                continue
 
             embeddings: list[list[float]] = []
             contents: list[Any] = []

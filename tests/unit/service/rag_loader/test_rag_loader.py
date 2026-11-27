@@ -73,7 +73,7 @@ def test_load_document_corpus(
 
     mock_text_embedding_repo = MagicMock()
 
-    mock_text_embedding_repo.is_file_already_acquired_query.return_value = False
+    mock_text_embedding_repo.is_file_already_acquired.return_value = False
 
     loader = RagLoader(
         configuration=cfg,
@@ -93,7 +93,7 @@ def test_load_document_corpus(
         return_value=[document],
     ):
 
-        loader.load_document_corpus()
+        loader.load_document_corpus(root_directory=Path("/document/root/path"))
 
     text_extractor.extract_text_content.assert_called_once_with(
         document_source_identifier=document

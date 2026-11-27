@@ -10,8 +10,9 @@ def cli() -> None:
 
 
 @cli.command()
-def acquire() -> None:
-    load_documents()
+@click.argument("root_directory")
+def acquire(root_directory: str) -> None:
+    load_documents(root_directory=root_directory)
 
 
 @cli.command()

@@ -26,7 +26,8 @@
             "request": "launch",
             "module": "rag_platform",
             "args": [
-                "acquire"
+                "acquire",
+                "/documents-root"
             ],
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
