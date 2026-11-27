@@ -1,5 +1,6 @@
 import logging
 from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
@@ -17,7 +18,22 @@ from rag_platform.text_extraction.null_extractor import NullTextExtractor
 TextExtractorsMap = dict[RagCorpusFileTypes, BaseTextExtractor]
 
 
-class RagLoader:
+@dataclass
+class RagLoaderProcessStatus:
+    total_files: int = 0
+    current_file: int = 0
+    file_process_step: str | None = None
+    file_total_sentences: int = 0
+    file_current_sentence: int = 0
+
+
+class RagLoaderBase:
+    @staticmethod
+    def show_load_progress(status: RagLoaderProcessStatus) -> None:
+        print(status)
+
+
+class RagLoader(RagLoaderBase):
 
     def __init__(
         self,
@@ -62,10 +78,24 @@ class RagLoader:
         )
 
     def load_document_corpus(self) -> None:
-        for document in self.list_document_files(
-            root_directory=self.root_directory, file_types=self.file_types
-        ):
 
+        document_files_list: list[Path] = list(
+            self.list_document_files(
+                root_directory=self.root_directory, file_types=self.file_types
+            )
+        )
+
+        total_files: int = len(document_files_list)
+
+        for document_index, document in enumerate(document_files_list):
+            current_file: int = document_index + 1
+            self.show_load_progress(
+                status=RagLoaderProcessStatus(
+                    total_files=total_files,
+                    current_file=current_file,
+                    file_process_step="START",
+                )
+            )
             text_extractor: BaseTextExtractor = self.text_extractors_map.get(
                 RagLoader.infer_file_type(document),
                 NullTextExtractor(configuration=self.configuration),
@@ -75,6 +105,13 @@ class RagLoader:
                 text_extractor.extract_text_content(document_source_identifier=document)
             )
 
+            self.show_load_progress(
+                status=RagLoaderProcessStatus(
+                    total_files=total_files,
+                    current_file=current_file,
+                    file_process_step="CONTENT READ",
+                )
+            )
             file_hash = self.file_hash_calculator.get_file_hash(file_path=document)
 
             embeddings: list[list[float]] = []
@@ -82,8 +119,21 @@ class RagLoader:
             file_names: list[str] = []
             file_hashes: list[str] = []
 
-            for text in document_text.values():
+            file_total_sentences: int = len(document_text.values())
+
+            for text_item_index, text in enumerate(document_text.values()):
+                file_current_sentence = text_item_index + 1
                 text_embeddings = self.embed_model_client.embed(input=text)
+
+                self.show_load_progress(
+                    status=RagLoaderProcessStatus(
+                        total_files=total_files,
+                        current_file=current_file,
+                        file_process_step="EMBEDDED ITEM",
+                        file_total_sentences=file_total_sentences,
+                        file_current_sentence=file_current_sentence,
+                    )
+                )
 
                 if len(text_embeddings.embeddings) == 1:
                     embeddings.extend(
@@ -99,4 +149,14 @@ class RagLoader:
                 contents=contents,
                 file_names=file_names,
                 file_hashes=file_hashes,
+            )
+
+            self.show_load_progress(
+                status=RagLoaderProcessStatus(
+                    total_files=total_files,
+                    current_file=current_file,
+                    file_process_step="EMBEDDING DB INSERT",
+                    file_total_sentences=file_total_sentences,
+                    file_current_sentence=file_total_sentences,
+                )
             )

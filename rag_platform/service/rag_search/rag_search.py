@@ -20,6 +20,8 @@ from rag_platform.text_extraction.common import (
 type TextExtractorsMap = dict[RagCorpusFileTypes, BaseTextExtractor]
 
 type RagSearchAnswer = list[TextEmbeddingDTO]
+
+
 class RagSearch:
 
     def __init__(
@@ -62,7 +64,7 @@ class RagSearch:
         )
 
     @staticmethod
-    def extract_ui_readable_answer(rag_search_result:RagSearchAnswer, sentence_separator:str="\n")-> str:
-        return sentence_separator.join([
-            item.content for item in rag_search_result
-        ])
+    def extract_ui_readable_answer(
+        rag_search_result: RagSearchAnswer, sentence_separator: str = "\n"
+    ) -> str:
+        return sentence_separator.join([item.content for item in rag_search_result])
