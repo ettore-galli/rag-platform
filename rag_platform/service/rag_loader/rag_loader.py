@@ -1,6 +1,7 @@
 import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
+from itertools import batched
 from pathlib import Path
 from typing import Any, cast
 
@@ -66,6 +67,8 @@ class RagLoader(RagLoaderBase):
         self.file_hash_calculator: FileHashCalculatorBase = file_hash_calculator
 
         self.logger = logger or logging.getLogger(__name__)
+
+        self.batch_size: int = 10
 
     @staticmethod
     def infer_file_type(file_path: Path) -> RagCorpusFileTypes:
@@ -144,10 +147,23 @@ class RagLoader(RagLoaderBase):
             file_hashes: list[str] = []
 
             file_total_sentences: int = len(document_text.values())
+            sentence_counter: int = 0
 
-            for text_item_index, text in enumerate(document_text.values()):
-                file_current_sentence = text_item_index + 1
-                text_embeddings = self.embed_model_client.embed(input=text)
+            for batch in batched(document_text.values(), self.batch_size):
+
+                text_embeddings = self.embed_model_client.embed(input=batch)
+
+                if len(text_embeddings.embeddings) == len(batch):
+
+                    embeddings.extend(
+                        cast("list[list[float]]", text_embeddings.embeddings)
+                    )
+                    contents.extend(batch)
+                    file_names.extend([document.name] * len(batch))
+
+                    file_hashes.extend([file_hash] * len(batch))
+
+                sentence_counter += len(batch)
 
                 self.show_load_progress(
                     status=RagLoaderProcessStatus(
@@ -156,19 +172,9 @@ class RagLoader(RagLoaderBase):
                         current_file=current_file,
                         file_process_step="EMBEDDED ITEM",
                         file_total_sentences=file_total_sentences,
-                        file_current_sentence=file_current_sentence,
+                        file_current_sentence=sentence_counter,
                     )
                 )
-
-                if len(text_embeddings.embeddings) == 1:
-                    embeddings.extend(
-                        cast("list[list[float]]", text_embeddings.embeddings)
-                    )
-                    contents.append(text)
-                    file_names.append(document.name)
-
-                    file_hashes.append(file_hash)
-
             self.text_embedding_repo.insert_embeddings(
                 embeddings=embeddings,
                 contents=contents,

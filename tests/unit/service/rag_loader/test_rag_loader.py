@@ -63,11 +63,13 @@ def test_load_document_corpus(
     embed_model_client = MagicMock()
 
     embed_response = MagicMock(spec=EmbedResponse)
-    embed_response.embeddings = [[0.1, 0.2, 0.3]]
+    embed_response.embeddings = [[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
 
     def dummy_embed(input: str | Sequence[str] = "") -> EmbedResponse:
         _ = input
-        return EmbedResponse(embeddings=[[0.1, 0.2, 0.3]])
+        return EmbedResponse(
+            embeddings=[[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]]
+        )
 
     embed_model_client.embed.side_effect = dummy_embed
 
@@ -99,20 +101,18 @@ def test_load_document_corpus(
         document_source_identifier=document
     )
 
-    assert embed_model_client.embed.call_count == 3
+    assert embed_model_client.embed.call_count == 1
 
     embed_model_client.embed.assert_has_calls(
-        [
-            call(input="testo uno"),
-            call(input="testo due"),
-            call(input="testo tre"),
-        ]
+        [call(input=("testo uno", "testo due", "testo tre"))]
     )
 
     assert [c.kwargs["input"] for c in embed_model_client.embed.call_args_list] == [
-        "testo uno",
-        "testo due",
-        "testo tre",
+        (
+            "testo uno",
+            "testo due",
+            "testo tre",
+        )
     ]
 
     assert mock_text_embedding_repo.insert_embeddings.call_count == 1
