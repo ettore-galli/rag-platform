@@ -180,3 +180,29 @@ def test_get_merged_search_results():
     merged_keys = [(item.file_hash, item.sentence_number) for item in merged]
 
     assert merged_keys == expected_merged_keys
+
+
+def test_extract_ui_readable_answer():
+    rag_search_result = [
+        TextEmbeddingDTO(
+            id=ANY,
+            embedding=ANY,
+            content=content,
+            file_name=ANY,
+            file_hash=ANY,
+            sentence_number=sentence_number,
+            distance=ANY,
+        )
+        for sentence_number, content in [
+            (1, "Sentence 1"),
+            (2, "Sentence 2"),
+            (1, "Sentence 3"),
+        ]
+    ]
+
+    assert (
+        RagSearch.extract_ui_readable_answer(
+            rag_search_result=rag_search_result, sentence_separator="*"
+        )
+        == "Sentence 1*Sentence 2*Sentence 3"
+    )

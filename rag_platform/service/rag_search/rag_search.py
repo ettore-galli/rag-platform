@@ -17,9 +17,9 @@ from rag_platform.text_extraction.common import (
     BaseTextExtractor,
 )
 
-TextExtractorsMap = dict[RagCorpusFileTypes, BaseTextExtractor]
+type TextExtractorsMap = dict[RagCorpusFileTypes, BaseTextExtractor]
 
-
+type RagSearchAnswer = list[TextEmbeddingDTO]
 class RagSearch:
 
     def __init__(
@@ -44,7 +44,7 @@ class RagSearch:
         }
         return [records_map[key] for key in sorted(records_map.keys())]
 
-    def search(self, query: str) -> list[TextEmbeddingDTO]:
+    def search(self, query: str) -> RagSearchAnswer:
 
         query_embeddings: EmbedResponse = self.embed_model_client.embed(input=query)
 
@@ -60,3 +60,9 @@ class RagSearch:
         return RagSearch.get_merged_search_results(
             [item for result in search_results for item in result]
         )
+
+    @staticmethod
+    def extract_ui_readable_answer(rag_search_result:RagSearchAnswer, sentence_separator:str="\n")-> str:
+        return sentence_separator.join([
+            item.content for item in rag_search_result
+        ])
