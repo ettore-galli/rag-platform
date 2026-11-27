@@ -112,6 +112,7 @@ class RagLoader(RagLoaderBase):
             if self.text_embedding_repo.is_file_already_acquired(file_hash=file_hash):
                 self.show_load_progress(
                     status=RagLoaderProcessStatus(
+                        file_name=str(document),
                         total_files=total_files,
                         current_file=current_file,
                         file_process_step="FILE ALREADY ACQUIRED / SKIPPED",
@@ -130,6 +131,7 @@ class RagLoader(RagLoaderBase):
 
             self.show_load_progress(
                 status=RagLoaderProcessStatus(
+                    file_name=str(document),
                     total_files=total_files,
                     current_file=current_file,
                     file_process_step="CONTENT READ",
@@ -149,6 +151,7 @@ class RagLoader(RagLoaderBase):
 
                 self.show_load_progress(
                     status=RagLoaderProcessStatus(
+                        file_name=str(document),
                         total_files=total_files,
                         current_file=current_file,
                         file_process_step="EMBEDDED ITEM",
@@ -175,6 +178,7 @@ class RagLoader(RagLoaderBase):
 
             self.show_load_progress(
                 status=RagLoaderProcessStatus(
+                    file_name=str(document),
                     total_files=total_files,
                     current_file=current_file,
                     file_process_step="EMBEDDING DB INSERT",
