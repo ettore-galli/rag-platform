@@ -71,7 +71,9 @@ def test_load_document_corpus(
 
     embed_model_client.embed.side_effect = dummy_embed
 
-    text_embedding_repo = MagicMock()
+    mock_text_embedding_repo = MagicMock()
+
+    mock_text_embedding_repo.is_file_already_acquired_query.return_value = False
 
     loader = RagLoader(
         configuration=cfg,
@@ -81,7 +83,7 @@ def test_load_document_corpus(
             RagCorpusFileTypes.PDF: text_extractor,
         },
         embed_model_client=embed_model_client,
-        text_embedding_repo=text_embedding_repo,
+        text_embedding_repo=mock_text_embedding_repo,
         file_hash_calculator=DummyFileHashCalculator(),
     )
 
@@ -113,9 +115,9 @@ def test_load_document_corpus(
         "testo tre",
     ]
 
-    assert text_embedding_repo.insert_embeddings.call_count == 1
+    assert mock_text_embedding_repo.insert_embeddings.call_count == 1
 
-    text_embedding_repo.insert_embeddings.assert_has_calls(
+    mock_text_embedding_repo.insert_embeddings.assert_has_calls(
         [
             call(
                 embeddings=[[0.1, 0.2, 0.3], [0.1, 0.2, 0.3], [0.1, 0.2, 0.3]],

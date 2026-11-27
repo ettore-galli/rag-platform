@@ -20,11 +20,19 @@ TextExtractorsMap = dict[RagCorpusFileTypes, BaseTextExtractor]
 
 @dataclass
 class RagLoaderProcessStatus:
+    file_name: str | None = None
     total_files: int = 0
     current_file: int = 0
     file_process_step: str | None = None
     file_total_sentences: int = 0
     file_current_sentence: int = 0
+
+    def __str__(self) -> str:
+        return (
+            f"Doc {self.current_file} / {self.total_files}: {self.file_process_step} "
+            f"sentence {self.file_current_sentence} / {self.file_total_sentences} "
+            f"file: {self.file_name}"
+        )
 
 
 class RagLoaderBase:
@@ -91,6 +99,7 @@ class RagLoader(RagLoaderBase):
             current_file: int = document_index + 1
             self.show_load_progress(
                 status=RagLoaderProcessStatus(
+                    file_name=str(document),
                     total_files=total_files,
                     current_file=current_file,
                     file_process_step="START",
@@ -112,7 +121,20 @@ class RagLoader(RagLoaderBase):
                     file_process_step="CONTENT READ",
                 )
             )
+
             file_hash = self.file_hash_calculator.get_file_hash(file_path=document)
+
+            if self.text_embedding_repo.is_file_already_acquired_query(
+                file_hash=file_hash
+            ):
+                self.show_load_progress(
+                    status=RagLoaderProcessStatus(
+                        total_files=total_files,
+                        current_file=current_file,
+                        file_process_step="FILE ALREADY ACQUIRED / SKIPPED",
+                    )
+                )
+                continue
 
             embeddings: list[list[float]] = []
             contents: list[Any] = []

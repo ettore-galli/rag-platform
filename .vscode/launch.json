@@ -19,6 +19,21 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "rag platform load documents",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "rag_platform",
+            "args": [
+                "acquire"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

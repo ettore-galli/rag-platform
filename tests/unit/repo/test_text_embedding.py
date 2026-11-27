@@ -1,9 +1,36 @@
 from typing import cast
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock
 
 from rag_platform.common.database.tools import get_figurative_session, render_query
 from rag_platform.db_models.text_embeddings import TextEmbedding, TextEmbeddingDTO
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
+
+
+def test_is_file_already_acquired_query():
+    figurative_session = get_figurative_session()
+
+    repo = TextEmbeddingRepo(session=figurative_session)
+
+    query = repo.is_file_already_acquired_query("HASH123")
+
+    assert render_query(query).replace("\n", " ") == (
+        "SELECT text_embeddings.id  "
+        "FROM text_embeddings  "
+        "WHERE text_embeddings.file_hash = 'HASH123'"
+    )
+
+
+def test_is_file_already_acquired():
+    figurative_session = get_figurative_session()
+
+    mock_is_file_already_acquired_query = MagicMock()
+
+    repo = TextEmbeddingRepo(session=figurative_session)
+    repo.is_file_already_acquired_query = mock_is_file_already_acquired_query
+
+    repo.is_file_already_acquired("HASH123")
+
+    mock_is_file_already_acquired_query.assert_called_with("HASH123")
 
 
 def test_insert_embeddings_adds_all_entities_and_commits():

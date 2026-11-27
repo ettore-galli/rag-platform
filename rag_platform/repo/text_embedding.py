@@ -24,6 +24,14 @@ class TextEmbeddingRepo(BaseRepo):
     DEFAULT_QUERY_LIMIT: int = 5
     VECTOR_DISTANCE_LABEL: str = "distance"
 
+    def is_file_already_acquired_query(self, file_hash: str) -> Query[Row[int]]:
+        return self.session.query(TextEmbedding.id).filter(
+            TextEmbedding.file_hash == file_hash
+        )
+
+    def is_file_already_acquired(self, file_hash: str) -> bool:
+        return self.is_file_already_acquired_query(file_hash).first() is not None
+
     def insert_embeddings(
         self,
         embeddings: list[list[float]],
