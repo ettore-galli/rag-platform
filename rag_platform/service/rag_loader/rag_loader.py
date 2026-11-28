@@ -31,7 +31,6 @@ class RagLoaderProcessStatus:
 
     WIDTH = 79
 
-
     @staticmethod
     def _progress_bar(current: int, total: int, width: int) -> str:
         if total <= 0:
@@ -41,7 +40,15 @@ class RagLoaderProcessStatus:
         percent = round(100 * ratio, 3)
         filled = round(ratio * width)
 
-        return  "[" + str(percent).rjust(6) + "%]" + "[" + ("#" * filled) + ("-" * (width - filled)) + "]"
+        return (
+            "["
+            + str(percent).rjust(6)
+            + "%]"
+            + "["
+            + ("#" * filled)
+            + ("-" * (width - filled))
+            + "]"
+        )
 
     def render(self) -> list[str]:
         file_bar = self._progress_bar(
