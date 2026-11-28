@@ -104,7 +104,7 @@ class RagLoader(RagLoaderBase):
 
         self.logger = logger or logging.getLogger(__name__)
 
-        self.batch_size: int = 20
+        self.batch_size: int = 50
 
     @staticmethod
     def infer_file_type(file_path: Path) -> RagCorpusFileTypes:
