@@ -8,6 +8,7 @@ from typing import Any, cast
 from rag_platform.common.base_types import RagCorpusFileTypes
 from rag_platform.common.configuration.rag_configuration import RagConfiguration
 from rag_platform.common.utilities.file_hash import FileHashCalculatorBase
+from rag_platform.common.utilities.screen import draw
 from rag_platform.model_client.base import BaseModelClient
 from rag_platform.repo.text_embedding import TextEmbeddingRepo
 from rag_platform.text_extraction.common import (
@@ -28,18 +29,53 @@ class RagLoaderProcessStatus:
     file_total_sentences: int = 0
     file_current_sentence: int = 0
 
-    def __str__(self) -> str:
-        return (
-            f"Doc {self.current_file} / {self.total_files}: {self.file_process_step} "
-            f"sentence {self.file_current_sentence} / {self.file_total_sentences} "
-            f"file: {self.file_name}"
+    WIDTH = 79
+
+
+    @staticmethod
+    def _progress_bar(current: int, total: int, width: int) -> str:
+        if total <= 0:
+            return "[" + ("-" * width) + "]"
+
+        ratio = min(max(current / total, 0.0), 1.0)
+        percent = round(100 * ratio, 3)
+        filled = round(ratio * width)
+
+        return  "[" + str(percent).rjust(6) + "%]" + "[" + ("#" * filled) + ("-" * (width - filled)) + "]"
+
+    def render(self) -> list[str]:
+        file_bar = self._progress_bar(
+            self.current_file,
+            self.total_files,
+            20,
         )
+
+        sentence_bar = self._progress_bar(
+            self.file_current_sentence,
+            self.file_total_sentences,
+            20,
+        )
+
+        row1 = f"File {file_bar} " f"Sentence {sentence_bar}"
+
+        row2 = (
+            f"Operazione: {self.file_process_step or '-'} "
+            f"File: {self.file_name or '-'}"
+        )
+
+        return [
+            row1[: self.WIDTH].ljust(self.WIDTH),
+            row2[: self.WIDTH].ljust(self.WIDTH),
+        ]
+
+    def __str__(self) -> str:
+        return "\n".join(self.render())
 
 
 class RagLoaderBase:
     @staticmethod
     def show_load_progress(status: RagLoaderProcessStatus) -> None:
-        print(status)
+        draw(status.render())
 
 
 class RagLoader(RagLoaderBase):
@@ -68,7 +104,7 @@ class RagLoader(RagLoaderBase):
 
         self.logger = logger or logging.getLogger(__name__)
 
-        self.batch_size: int = 10
+        self.batch_size: int = 20
 
     @staticmethod
     def infer_file_type(file_path: Path) -> RagCorpusFileTypes:
